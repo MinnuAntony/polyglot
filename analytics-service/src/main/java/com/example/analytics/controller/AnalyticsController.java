@@ -19,6 +19,7 @@ public class AnalyticsController {
     public Map<String, Object> getSummary(@PathVariable int userId) {
         RestTemplate restTemplate = new RestTemplate();
         Expense[] expenses = restTemplate.getForObject(EXPENSE_SERVICE_URL + "/" + userId, Expense[].class);
+	System.out.println("expenses " + Arrays.toString(expenses));
 
         double totalAmount = 0;
         Map<String, Double> categoryTotals = new HashMap<>();
