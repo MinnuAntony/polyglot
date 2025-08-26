@@ -1,0 +1,16 @@
+version: "3.9"
+services:
+  user-service:
+    build: ./user-service
+    ports:
+      - "8000:8000"
+
+  expense-service:
+    build: ./expense-service
+    ports:
+      - "8080:8080"
+
+  analytics-service:
+    build: ./analytics-service
+    ports:
+      - "8090:8090"
