@@ -8,11 +8,13 @@ import java.util.*;
 
 @RestController
 @CrossOrigin(origins = "*") // allow local frontend
+//@RequestMapping("/expenses")
+
 @RequestMapping("/summary")
 public class AnalyticsController {
 
-    private final String EXPENSE_SERVICE_URL = "http://expense-service:8080/expenses";
-    private final String USER_SERVICE_URL = "http://user-service:5000/users";
+    private final String EXPENSE_SERVICE_URL = "http://3.95.198.203:8080/expenses";
+    private final String USER_SERVICE_URL = "http://3.95.198.203:5000/users";
 
 
     @GetMapping("/{userId}")
