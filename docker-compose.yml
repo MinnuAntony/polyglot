@@ -38,10 +38,9 @@ services:
 
   # The React frontend service
   frontend:
-    # CORRECTED: Build context points to frontend-new
+    # Correct the build context and Dockerfile path
     build: 
-      context: ./frontend-new
-      dockerfile: Dockerfile
+      context: ./frontend-new/polyglot-frontend
     # Map container port 80 to host port 80 for web access
     ports:
       - "80:80"
