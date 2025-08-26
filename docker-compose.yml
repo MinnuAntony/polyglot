@@ -1,16 +1,28 @@
-version: "3.9"
+# Use a specific version of the Compose file format
+version: '3.8'
+
+# Define the services that make up your application
 services:
-  user-service:
-    build: ./user-service
-    ports:
-      - "8000:8000"
-
-  expense-service:
-    build: ./expense-service
-    ports:
-      - "8080:8080"
-
+  # The Java Spring Boot analytics service
   analytics-service:
+    # Build the image from the Dockerfile in the 'analytics-service' directory
     build: ./analytics-service
+    # Map container port 8090 to host port 8090
     ports:
       - "8090:8090"
+  
+  # The Go expense service
+  expense-service:
+    # Build the image from the Dockerfile in the 'expense-service' directory
+    build: ./expense-service
+    # Map container port 8080 to host port 8080
+    ports:
+      - "8080:8080"
+  
+  # The Python Flask user service
+  user-service:
+    # Build the image from the Dockerfile in the 'user-service' directory
+    build: ./user-service
+    # Map container port 5000 to host port 5000
+    ports:
+      - "5000:5000
