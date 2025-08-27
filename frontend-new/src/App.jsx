@@ -7,7 +7,10 @@ import Expenses from './components/Expenses';
 import './App.css';
 
 function App() {
-  const [userId, setUserId] = useState(null);
+  //const [userId, setUserId] = useState(null);
+  const [userId, setUserId] = useState(() => {
+      return localStorage.getItem('userId') || null
+  });
 
   return (
     <Router>

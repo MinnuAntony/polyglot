@@ -12,7 +12,8 @@ import java.util.*;
 public class AnalyticsController {
 
     // Updated to match your Go backend routes
-    private final String EXPENSE_SERVICE_URL = "http://3.91.202.159:8080/expense-service";
+   // private final String EXPENSE_SERVICE_URL = "http://3.91.202.159:8080/expense-service";
+    private final String EXPENSE_SERVICE_URL = "http://expense-service:8080/expenses";
 
     @GetMapping("/summary/{userId}")
     public Map<String, Object> getSummary(@PathVariable int userId) {

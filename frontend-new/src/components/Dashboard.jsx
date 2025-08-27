@@ -9,17 +9,20 @@ const Dashboard = ({ userId }) => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
+  // fallback to localStorage if userId is not passed down
+  const effectiveUserId = userId || localStorage.getItem('userId');
+
   useEffect(() => {
-    if (!userId) {
+    if (!effectiveUserId) {
       navigate('/login');
       return;
     }
     fetchSummary();
-  }, [userId, navigate]);
+  }, [effectiveUserId, navigate]);
 
   const fetchSummary = async () => {
     try {
-      const response = await getAnalyticsSummary(userId);
+      const response = await getAnalyticsSummary(effectiveUserId);
       setSummary(response.data);
     } catch (err) {
       setError('Failed to fetch analytics data.');
@@ -31,16 +34,20 @@ const Dashboard = ({ userId }) => {
   if (loading) return <p>Loading dashboard...</p>;
   if (error) return <p>{error}</p>;
 
-  const categoryData = summary ? Object.keys(summary.categoryTotals).map(key => ({
-    category: key,
-    amount: summary.categoryTotals[key]
-  })) : [];
+  const categoryData = summary 
+    ? Object.keys(summary.categoryTotals).map(key => ({
+        category: key,
+        amount: summary.categoryTotals[key]
+      }))
+    : [];
 
   return (
     <div className="dashboard-container">
       <h2>Expense Dashboard</h2>
       <div className="summary-section">
-        <p>Total Expenses: **${summary?.totalAmount ? summary.totalAmount.toFixed(2) : '0.00'}**</p>
+        <p>
+          Total Expenses: ${summary?.totalAmount ? summary.totalAmount.toFixed(2) : '0.00'}
+        </p>
       </div>
 
       <div className="chart-section">
@@ -49,9 +56,7 @@ const Dashboard = ({ userId }) => {
           <ResponsiveContainer width="100%" height={300}>
             <BarChart
               data={categoryData}
-              margin={{
-                top: 5, right: 30, left: 20, bottom: 5,
-              }}
+              margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
             >
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="category" />
@@ -67,7 +72,9 @@ const Dashboard = ({ userId }) => {
       </div>
 
       <div className="actions">
-        <button onClick={() => navigate('/expenses')}>Go to Expenses</button>
+        <button onClick={() => navigate('/expenses')}>
+          Go to Expenses
+        </button>
       </div>
     </div>
   );

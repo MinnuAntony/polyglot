@@ -1,45 +1,52 @@
 import React, { useState, useEffect } from 'react';
-import { getExpenses, addExpense } from '../api';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 const Expenses = ({ userId }) => {
+  console.log("Expenses loaded with userId:", userId);
+  
   const [expenses, setExpenses] = useState([]);
-  const [newExpense, setNewExpense] = useState({ description: '', amount: '', category: '' });
+  const [newExpense, setNewExpense] = useState({ amount: '', category: '' });
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
 
+  const effectiveUserId = userId || localStorage.getItem('userId');
+
   useEffect(() => {
-    if (!userId) {
+    if (!effectiveUserId) {
       navigate('/login');
       return;
     }
     fetchExpenses();
-  }, [userId, navigate]);
+  }, [effectiveUserId, navigate]);
 
   const fetchExpenses = async () => {
-    try {
-      const response = await getExpenses(userId);
-      setExpenses(response.data);
-    } catch (error) {
-      setMessage("Error fetching expenses.");
-    }
-  };
+  try {
+    const response = await axios.get(`http://3.91.202.159:8080/expenses/${effectiveUserId}`);
+    setExpenses(Array.isArray(response.data) ? response.data : []);
+  } catch (error) {
+    setExpenses([]); // fallback to empty array
+    setMessage("Error fetching expenses.");
+  }
+};
+
 
   const handleAddExpense = async (e) => {
     e.preventDefault();
-    if (!userId) {
+    if (!effectiveUserId) {
       alert('Please log in first.');
       return;
     }
+
     const expenseData = {
-      userId: userId,
-      description: newExpense.description,
-      amount: parseFloat(newExpense.amount),
+      user_id: effectiveUserId, // Match backend
       category: newExpense.category,
+      amount: parseFloat(newExpense.amount),
     };
+
     try {
-      await addExpense(expenseData);
-      setNewExpense({ description: '', amount: '', category: '' });
+      await axios.post('http://3.91.202.159:8080/expenses', expenseData);
+      setNewExpense({ amount: '', category: '' });
       fetchExpenses(); // Refresh the list
       setMessage('Expense added successfully!');
     } catch (error) {
@@ -51,13 +58,6 @@ const Expenses = ({ userId }) => {
     <div className="expenses-container">
       <h2>Your Expenses</h2>
       <form onSubmit={handleAddExpense} className="add-expense-form">
-        <input
-          type="text"
-          placeholder="Description"
-          value={newExpense.description}
-          onChange={(e) => setNewExpense({ ...newExpense, description: e.target.value })}
-          required
-        />
         <input
           type="number"
           placeholder="Amount"
@@ -77,9 +77,9 @@ const Expenses = ({ userId }) => {
 
       {expenses.length > 0 ? (
         <ul className="expense-list">
-          {expenses.map((exp, index) => (
-            <li key={index}>
-              {exp.description} - ${exp.amount.toFixed(2)} ({exp.category})
+          {expenses.map((exp) => (
+            <li key={exp.id}>
+              ${exp.amount.toFixed(2)} ({exp.category})
             </li>
           ))}
         </ul>

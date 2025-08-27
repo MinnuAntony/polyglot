@@ -12,14 +12,16 @@ const LoginForm = ({ setUserId }) => {
     e.preventDefault();
     try {
       const response = await loginUser(username, password);
-      
       // response is already res.data from api.js
-      setUserId(response.user_id);
+
+      const userId = response.userId || response.user_id; // support both formats just in case
+      localStorage.setItem('userId', userId);
+      setUserId(userId);
+
       setMessage(response.message || 'Login successful!');
       alert('Login successful!');
       navigate('/dashboard');
     } catch (error) {
-      // safe error handling
       setMessage(error.message || 'Login failed');
     }
   };
@@ -50,4 +52,3 @@ const LoginForm = ({ setUserId }) => {
 };
 
 export default LoginForm;
-
