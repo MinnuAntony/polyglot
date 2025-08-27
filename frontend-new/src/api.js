@@ -1,28 +1,53 @@
 import axios from 'axios';
 
-// Base URLs for your microservices, assuming an API Gateway is in place
-// Use service names as hostnames for inter-container communication
-const USER_SERVICE_URL = 'http://user-service:5000';
-const EXPENSE_SERVICE_URL = 'http://expense-service:8080';
-const ANALYTICS_SERVICE_URL = 'http://analytics-service:8090';
+const USER_SERVICE_URL = '/user-service';
+const EXPENSE_SERVICE_URL = '/expense-service';
+const ANALYTICS_SERVICE_URL = '/analytics-service';
 
-
-export const registerUser = (username, password) => {
-  return axios.post(`${USER_SERVICE_URL}/register`, { username, password });
+// Register user with safe error handling
+export const registerUser = async (username, password) => {
+  try {
+    const res = await axios.post(`${USER_SERVICE_URL}/register`, { username, password });
+    console.log("Register response:", res);
+    return res.data; // return data directly
+  } catch (error) {
+    console.error("Register error:", error);
+    if (error.response && error.response.data) {
+      throw new Error(error.response.data.detail || 'Registration failed');
+    } else {
+      throw new Error(error.message || 'Registration failed');
+    }
+  }
 };
 
-export const loginUser = (username, password) => {
-  return axios.post(`${USER_SERVICE_URL}/login`, { username, password });
+// Login user
+export const loginUser = async (username, password) => {
+  try {
+    const res = await axios.post(`${USER_SERVICE_URL}/login`, { username, password });
+    return res.data;
+  } catch (error) {
+    if (error.response && error.response.data) {
+      throw new Error(error.response.data.detail || 'Login failed');
+    } else {
+      throw new Error(error.message || 'Login failed');
+    }
+  }
 };
 
-export const getExpenses = (userId) => {
-  return axios.get(`${EXPENSE_SERVICE_URL}/${userId}`);
+// Expenses
+export const getExpenses = async (userId) => {
+  const res = await axios.get(`${EXPENSE_SERVICE_URL}/${userId}`);
+  return res.data;
 };
 
-export const addExpense = (expense) => {
-  return axios.post(`${EXPENSE_SERVICE_URL}/add`, expense);
+export const addExpense = async (expense) => {
+  const res = await axios.post(`${EXPENSE_SERVICE_URL}/add`, expense);
+  return res.data;
 };
 
-export const getAnalyticsSummary = (userId) => {
-  return axios.get(`${ANALYTICS_SERVICE_URL}/summary/${userId}`);
+// Analytics
+export const getAnalyticsSummary = async (userId) => {
+  const res = await axios.get(`${ANALYTICS_SERVICE_URL}/summary/${userId}`);
+  return res.data;
 };
+

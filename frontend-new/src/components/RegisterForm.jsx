@@ -12,11 +12,13 @@ const RegisterForm = () => {
     e.preventDefault();
     try {
       const response = await registerUser(username, password);
-      setMessage(response.data.message);
+      // response is now the parsed JSON, no .data needed
+      setMessage(response.message || 'Registration successful!');
       alert('Registration successful! You can now log in.');
       navigate('/login');
     } catch (error) {
-      setMessage(error.response.data.detail);
+      // handle safe error messages
+      setMessage(error.message || 'An unexpected error occurred');
     }
   };
 
@@ -46,3 +48,4 @@ const RegisterForm = () => {
 };
 
 export default RegisterForm;
+

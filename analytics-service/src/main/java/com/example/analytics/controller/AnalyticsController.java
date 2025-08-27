@@ -7,21 +7,20 @@ import org.springframework.web.client.RestTemplate;
 import java.util.*;
 
 @RestController
-@CrossOrigin(origins = "*") // allow local frontend
-//@RequestMapping("/expenses")
-
-@RequestMapping("/summary")
+@CrossOrigin(origins = "*")
+@RequestMapping("/analytics-service")
 public class AnalyticsController {
 
-    private final String EXPENSE_SERVICE_URL = "http://3.95.198.203:8080/expenses";
-    private final String USER_SERVICE_URL = "http://3.95.198.203:5000/users";
+    // Updated to match your Go backend routes
+    private final String EXPENSE_SERVICE_URL = "http://3.91.202.159:8080/expense-service";
 
-
-    @GetMapping("/{userId}")
+    @GetMapping("/summary/{userId}")
     public Map<String, Object> getSummary(@PathVariable int userId) {
         RestTemplate restTemplate = new RestTemplate();
+
+        // Call the correct route to fetch user expenses
         Expense[] expenses = restTemplate.getForObject(EXPENSE_SERVICE_URL + "/" + userId, Expense[].class);
-	System.out.println("expenses " + Arrays.toString(expenses));
+        System.out.println("expenses " + Arrays.toString(expenses));
 
         double totalAmount = 0;
         Map<String, Double> categoryTotals = new HashMap<>();
@@ -40,3 +39,4 @@ public class AnalyticsController {
         return summary;
     }
 }
+

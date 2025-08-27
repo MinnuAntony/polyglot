@@ -5,48 +5,39 @@ version: '3.8'
 services:
   # The Java Spring Boot analytics service
   analytics-service:
-    # Build the image from the Dockerfile in the 'analytics-service' directory
     build: ./analytics-service
-    # Map container port 8090 to host port 8090
     ports:
       - "8090:8090"
     container_name: analytics-service
-    
+
   # The Go expense service
   expense-service:
-    # Build the image from the Dockerfile in the 'expense-service' directory
     build: ./expense-service
-    # Map container port 8080 to host port 8080
     ports:
       - "8080:8080"
     container_name: expense-service
-    # Ensure this service starts only after the analytics service is ready
     depends_on:
       - analytics-service
 
   # The Python FastAPI user service
   user-service:
-    # Build the image from the Dockerfile in the 'user-service' directory
     build: ./user-service
-    # Map container port 5000 to host port 5000
     ports:
       - "5000:5000"
     container_name: user-service
-    # Ensure this service starts only after the expense service is ready
     depends_on:
       - expense-service
 
   # The React frontend service
   frontend:
-    # Correct the build context and Dockerfile path
-    build: 
-      context: ./frontend-new/polyglot-frontend
-    # Map container port 80 to host port 80 for web access
+    build:
+      context: ./frontend-new
+      dockerfile: Dockerfile
     ports:
       - "80:80"
     container_name: frontend
-    # Ensure this service starts after all backend services are running
     depends_on:
       - user-service
       - expense-service
       - analytics-service
+
