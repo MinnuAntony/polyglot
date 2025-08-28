@@ -5,6 +5,7 @@ const USER_SERVICE_URL = '/user-service';
 //const EXPENSE_SERVICE_URL = '/expense-service';
 // const EXPENSE_SERVICE_URL = 'http://3.91.202.159:8080/expense-service'; // <-- replaced by EXPENSES_URL
 const ANALYTICS_SERVICE_URL = '/analytics-service';
+//const ANALYTICS_SERVICE_URL = 'http://13.222.165.100:8090/analytics-service';
 
 // Register user with safe error handling
 export const registerUser = async (username, password) => {

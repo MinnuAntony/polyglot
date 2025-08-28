@@ -16,7 +16,7 @@ function App() {
     <Router>
       <div className="app-container">
         <header>
-          <h1 Expense Tracker</h1>
+          <h1> Expense Tracker</h1>
         </header>
         <main>
           <Routes>
