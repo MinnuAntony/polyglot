@@ -20,7 +20,7 @@ def register(user: User):
     global user_id_counter
     for u in users:
         if u.username == user.username:
-            raise HTTPException(status_code=400, detail="Username already exists")
+            raise HTTPException(status_code=400, detail="USERNAME already exists!!")
     user.id = user_id_counter
     user_id_counter += 1
     users.append(user)
@@ -30,7 +30,7 @@ def register(user: User):
 def login(user: User):
     for u in users:
         if u.username == user.username and u.password == user.password:
-            return {"message": "Login successful", "user_id": u.id}
+            return {"message": "Login successful!!", "user_id": u.id}
     raise HTTPException(status_code=401, detail="Invalid credentials")
 
 @app.get("/users")
