@@ -1,33 +1,22 @@
-#
-# Stage 1: Build the React application
-#
+# Stage 1: Build React app
 FROM node:20.11-alpine AS build
 
 WORKDIR /app
 
-# Copy package files first for caching
+# Copy package files, install dependencies, then copy source and build
 COPY package*.json ./
+RUN npm ci --no-audit --no-fund
 
-# Use npm ci for consistent and reproducible builds
-RUN npm ci
-
-# Copy all source code, respecting the .dockerignore file
 COPY . .
+RUN npm run build && npm cache clean --force
 
-# Build the application for production
-RUN npm run build
-
-#
-# Stage 2: Serve the application with Nginx
-#
+# Stage 2: Serve with Nginx
 FROM nginx:1.25.3-alpine
 
-# Copy custom Nginx configuration
+# Copy custom Nginx config and built React files
 COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-# Copy static files from the build stage
 COPY --from=build /app/dist /usr/share/nginx/html
 
 EXPOSE 80
-
 CMD ["nginx", "-g", "daemon off;"]
+
